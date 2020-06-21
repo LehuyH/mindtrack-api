@@ -55,38 +55,44 @@ async function getInfo(trackID){
   }
 }
 
-async function loginUser(username, password) {
- 
-  //Check if the username exists
- 
-  let user = await User.findOne({username: username})
 
-  if (user !== null) { //username exists
-  
-      //Compare hashes
-       if(await bcrypt.compare(password, user.password)){
-         //Generate a web token
-        const token = jwt.sign({id:user.id,username:user.username,fullName: user.fullName, random: await bcrypt.genSalt(10)}, process.env.SECERT, { expiresIn: '1h' })
-        return {success: true,token:token}
-       }else{ //Invalid password
-       
-        return {success: false,error: "Invalid Password"}
-       }
-    
-  } else {
-    return {success: false,error: "Invalid username"}
+async function getAllInfo(trackID,userID){
+  let track = await Track.findById(trackID)
+  if(track !== undefined){
+    if(track.collaborators.includes(userID)){
+    return {success:true, data:{title:track.title,id:track.id,author:track.author,subGoals:track.subGoals,obstacles:track.obstacles}}
+    }else{
+      return {success:false, error:"You don't have permission to view this content"}
+    }
+  }else{
+    return {success:false,error:"Could not find track"}
   }
-
-  
-
-
-
 }
+
+async function editTrack(trackID,userID,newData){
+  let track = await Track.findById(trackID)
+  if(track !== undefined){
+    if(track.collaborators.includes(userID)){
+     track = newData
+     track.save()
+     return {success:true}
+    }else{
+      return {success:false, error:"You don't have permission to edit this content"}
+    }
+  }else{
+    return {success:false,error:"Could not find track"}
+  }
+}
+
+
+
 
 
 
 module.exports = {
   create: createTrack,
   getInfo: getInfo,
+  getAllInfo:getAllInfo,
+  edit: editTrack
 
 }

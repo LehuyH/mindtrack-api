@@ -61,7 +61,25 @@ router.post("/getTrackInfo", verifyToken, async (req,res) =>{
 });
 
 
+router.post("/getAllTrackInfo", verifyToken, async (req,res) =>{
+  if(typeof req.body.trackID == "string"){
+       //Action here
+    res.json( await tracks.getInfo(req.body.trackID,req.user.id))
+  }else{
+    res.json({success: false,error:"Invalid api call"})
+  }
+});
 
+
+
+router.post("/editTrack", verifyToken, async (req,res) =>{
+  if(typeof req.body.trackID == "string" && req.body.newData == "object"){
+       //Action here
+    res.json( await tracks.edit(req.body.trackID,req.user.id,req.body.newData))
+  }else{
+    res.json({success: false,error:"Invalid api call"})
+  }
+});
 
 
 //Middlewares ==============
