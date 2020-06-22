@@ -91,9 +91,9 @@ router.post("/getAllTrackInfo", verifyToken, async (req, res) => {
 
 
 router.post("/setCollab", verifyToken, async (req, res) => {
-  if (typeof req.body.trackID == "string" && req.body.name == "string") {
+  if (typeof req.body.trackID == "string" && req.body.newData == "object") {
     //Action here
-    res.json(await tracks.setCollab(req.body.trackID, req.user.id, req.body.name))
+    res.json(await tracks.setCollab(req.body.trackID, req.user.id, req.body.newData))
   } else {
     res.json({
       success: false,

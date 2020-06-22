@@ -20,7 +20,7 @@ mongoose.connect(process.env.dbURL, {
 
 //Services
 async function createTrack(userID, trackData) {
-
+   trackData.collaborators = []
   //Check if the username is already in use
 
   let user = await User.findById(userID)
@@ -145,7 +145,6 @@ async function editTrack(trackID, userID, newData) {
     if (track.collaborators.includes(userID)) {
       track.title = newData.title
       track.subGoals = newData.subGoals
-      track.obstacles = newData.obstacles
       await track.save()
       return {
         success: true
@@ -172,12 +171,12 @@ async function deleteTrack(trackID, userID) {
       track.collaborators.forEach(async (collab, i) => {
         if (i !== 0) {
           let author = await User.findById(collab)
-          author.collabTracks.splice(users.indexOf(trackID), 1)
+          author.collabTracks.splice(author.indexOf(trackID), 1)
           await author.save()
         }
       })
       let author = await User.findById(userID)
-      author.userTracks.splice(users.indexOf(trackID), 1)
+      author.userTracks.splice(author.indexOf(trackID), 1)
       await author.save()
       await track.delete()
       return {

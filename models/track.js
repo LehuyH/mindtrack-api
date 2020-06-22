@@ -8,9 +8,6 @@ var trackSchema = new mongoose.Schema({
   },
   collaborators: {
     type: Array
-  },
-  obstacles: {
-    type: Array
   }
 });
 module.exports = mongoose.model('Track', trackSchema);
